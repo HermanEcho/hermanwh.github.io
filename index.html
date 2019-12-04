@@ -1,0 +1,229 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+    <!-- Bootstrap CSS -->
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
+
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+    <title>Document</title>
+
+        <style>
+
+            #user{
+                border-color: red;
+                background-color: red;
+                margin-left:10;
+            }
+
+            #driver{
+                border-color: yellow;
+                background-color: yellow;
+                margin-left:10;
+            }
+
+            #form1{
+                margin-top:10;
+            }
+
+            #form2{
+                margin-top:10;
+            }
+            
+        </style>
+
+</head>
+<body>
+
+    <div class="container">         
+        <div class="row">
+            <div class="col-sm-4" id="form1">
+                <form method="post" action=''>
+                    <input type="text" name="tag" placeholder="Input User" id="user1"/>
+                    <input type = "button" id = "driver" value = "Load Data" />
+                </form>
+            </div>        
+        
+            <!-- <div class="col-sm-4" id="form2">
+                <form method="post" action=''>
+                    <input type="text" name="tagUser" placeholder="Input User" id="user2"/>
+                    <input type = "button" id = "user" value = "Load User" />
+                </form>
+            </div> 
+
+            <div class="col-sm-4" id="form2">
+                <form method="post" action=''>
+                    <input type="text" name="tagUser" placeholder="Input Tags" id="hastag"/>
+                    <input type = "button" id = "tag" value = "Load Tags" />
+                </form>
+            </div>  -->
+
+        </div>      
+
+        <div class="col-sm-12">
+            <div class="" id="details">
+            <!-- <div class="" id="count"> -->
+
+            </div>
+            <div id="stage2"> 
+            
+            </div>
+        </div>
+
+    </div>
+    
+</body>
+
+
+   
+<script type="text/javascript">        
+    
+        $(document).ready(function() {
+            $("#driver").click(function(event){
+                var user = document.getElementById("user1").value;
+               
+                $.getJSON('https://www.instagram.com/'+user+'/?__a=1', function(jd) {
+                    var max = jd.graphql.user.edge_owner_to_timeline_media.page_info.end_cursor;                
+                 
+                    if(user == null || user == ""){
+                        alert("Keyword Kosong!");
+                    }else{                       
+ 
+                        $.getJSON('https://www.instagram.com/'+user+'/?__a=1&max_id='+max+'', function(jd) {  
+
+                            console.log("DATA =>" , jd);
+                            var nama    = jd.graphql.user.full_name;
+                            var count   = jd.graphql.user.edge_owner_to_timeline_media.count;
+                            var jd1     = jd.graphql.user.edge_owner_to_timeline_media.edges;
+                            var length  = jd.graphql.user.edge_owner_to_timeline_media.edges.length;
+
+                            console.log("jd1 =>" , jd1);
+
+                            $("#details").append("<h4>"+nama+"</h4>");
+                            $("#details").append("<h4> Jumlah Media : " +count+"</h4>");
+                            $("#details").append("<h4> MAX : " +length+"</h4>");
+
+                            jd1.map(function(data, idx){
+                                console.log("herman_wewa_huma =>" , data);
+                                console.log("thumbnail_src =>" ,data.node.thumbnail_src);
+
+                                var img = document.createElement("img");
+                                    img.setAttribute("height", "150");
+                                    img.setAttribute("width", "150");
+                                    img.src = data.node.thumbnail_src;
+
+                                var src = document.getElementById("stage2");
+                                    src.appendChild(img);
+
+                            });   
+
+                        });
+                    }  
+                })                
+
+            });               
+        });
+
+</script> 
+
+<script type="text/javascript">        
+    
+        $(document).ready(function() {
+            $("#user").click(function(event){
+                var user = document.getElementById("user2").value;
+            //    alert(user);
+                $.getJSON('https://www.instagram.com/'+user+'/?__a=1', function(jd) {
+                    var max     = jd.graphql.user.edge_owner_to_timeline_media.page_info.end_cursor;  
+                    var id      =  jd.graphql.user.id;           
+                    var nama    = jd.graphql.user.full_name;
+                    var count   = jd.graphql.user.edge_owner_to_timeline_media.count;
+
+                    $("#details").append("<h4>"+nama+"</h4>");
+                    $("#details").append("<h4> Jumlah Media : " +count+"</h4>");
+                    
+
+                    if(user == null || user == ""){
+                        alert("Keyword Kosong!");
+                    }else{                       
+
+                        $.getJSON('https://instagram.com/graphql/query/?query_id=17888483320059182&variables={"id":"'+id+'","first":"100","after":"'+max+'"}', function(jd) {  
+
+                            console.log("DATA =>" , jd);
+                            var jd1     = jd.data.user.edge_owner_to_timeline_media.edges;
+                            console.log("jd1 =>" , jd1);
+                            var length  = jd.data.user.edge_owner_to_timeline_media.edges.length;
+
+                            $("#details").append("<h4> MAX : " +length+"</h4>");
+
+                            jd1.map(function(data, idx){
+                                console.log("herman_wewa_huma =>" , data);
+                                console.log("thumbnail_src =>" ,data.node.thumbnail_src);
+
+                                var img = document.createElement("img");
+                                    img.setAttribute("height", "150");
+                                    img.setAttribute("width", "150");
+                                    img.src = data.node.thumbnail_src;
+
+                                var src = document.getElementById("stage2");
+                                    src.appendChild(img);
+
+                            });                                
+
+                        });
+
+                    }  
+                })                
+
+            });               
+        });
+
+</script> 
+
+<script>
+    $(document).ready(function(){
+        $('#tag').click(function(event){
+
+            var tags = document.getElementById("hastag").value;
+
+            $.getJSON('https://www.instagram.com/explore/tags/'+tags+'/?__a=1', function(jd) {
+                console.log('TAGS=>>',jd);
+                    var jd1     = jd.graphql.hashtag.edge_hashtag_to_media.edges;
+                    var count   = jd.graphql.hashtag.edge_hashtag_to_media.count;
+                    var nama    = jd.graphql.hashtag.name;
+                    var length  = jd.graphql.hashtag.edge_hashtag_to_media.edges.length;
+
+                    console.log("length=>" , length);
+
+                    $("#details").append("<h4>"+nama+"</h4>");
+                    $("#details").append("<h4> Jumlah Media : " +count+"</h4>");
+                    $("#details").append("<h4> MAX  : " +length+"</h4>");
+
+          
+
+                        jd1.map(function(data, idx){
+                            console.log("herman_wewa_huma =>" , data);
+
+                            var img = document.createElement("img");
+                                img.setAttribute("height", "150");
+                                img.setAttribute("width", "150");
+                                img.src = data.node.display_url;
+
+                            var src = document.getElementById("stage2");
+                                src.appendChild(img);
+
+                        });  
+                                          
+                });
+
+        });
+    });
+</script>
+
+     
+
+</html>
