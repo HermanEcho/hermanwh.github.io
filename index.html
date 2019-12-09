@@ -40,7 +40,7 @@
 </head>
 <body>
 
-    <div class="container">         
+    <div class="container">        
         <div class="row">
             <div class="col-sm-4" id="form1">
                 <form method="post" action=''>
@@ -62,6 +62,14 @@
                     <input type = "button" id = "tag" value = "Load Tags" />
                 </form>
             </div>  -->
+             <div class="col-sm-4" id="form2">
+                 //  The JS SDK Login Button 
+                <fb:login-button scope="public_profile,email" onlogin="checkLoginState();">
+                </fb:login-button>
+
+                <div id="status">
+                </div>
+            </div>             
 
         </div>      
 
@@ -224,13 +232,7 @@
     });
 </script>
 
-    //  The JS SDK Login Button 
-
-<fb:login-button scope="public_profile,email" onlogin="checkLoginState();">
-</fb:login-button>
-
-<div id="status">
-</div>
+   
 
 <script async defer src="https://connect.facebook.net/en_US/sdk.js"></script>
 
